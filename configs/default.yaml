@@ -1,0 +1,102 @@
+# AE5510: Physically Realizable Binary Adversarial Camouflage for Aerial Object Detectors
+# Default Configuration (Reproducible Academic Benchmark)
+
+seed: 0
+
+paths:
+  workspace_dir: "."
+  dataset_train_images: "dataset/Training Data/images"
+  dataset_train_labels: "dataset/Training Data/labels"
+  dataset_test_images: "dataset/Testing Data/images"
+  dataset_test_labels: "dataset/Testing Data/labels"
+  yolo11s_weights: "weights/yolo11s_best.pt"
+  seg_weights: "weights/yolo11n-seg.pt"
+  yolo11m_weights: "weights/yolo11m_best.pt"
+  yolov8s_weights: "weights/yolov8s_best.pt"
+  outputs_dir: "outputs"
+
+classes:
+  0: "Aircraft"
+  1: "Building"
+  2: "Military Truck"
+  3: "Tank"
+
+split:
+  train_base_scenes: 60
+  val_base_scenes: 14
+  test_base_scenes: 14
+  seed: 0
+
+segmentation:
+  conf: 0.10
+  erode_kernel_size: 3
+  erode_iterations: 1
+  grabcut_fallback: true
+
+distance:
+  delta_min_px: 2.5
+  delta_fraction: 0.10
+
+palette:
+  kmeans_k: 4
+  background_ring_width_px: 15
+  delta_L_min: 25.0
+  delta_E_max: 30.0
+  relaxation_step: 2.0
+
+pattern:
+  res: 48
+  init_std: 0.01
+  temp_start: 1.0
+  temp_end: 0.05
+  hard_binarize_fraction: 0.20
+  ste_type: "sigmoid"
+
+placement:
+  log_s_init: -2.3026  # ~0.10 initial scale
+  shear_max: 0.30
+  multi_start_k: 5
+  warmup_steps: 200
+  freeze_placement_steps: 200
+
+render:
+  srgb_gamma_decode: 2.2
+  shading_sigma_fraction: 0.15
+  shading_clip_min: 0.60
+  shading_clip_max: 1.40
+  feather_sigma_px: 1.50
+  sensor_gamma_eval: 2.0
+  sensor_gamma_eot_min: 1.8
+  sensor_gamma_eot_max: 2.2
+
+eot:
+  rotation_deg: [-30.0, 30.0]
+  zoom_scale: [1.2, 2.0]
+  homography_perturbation: 0.20
+  brightness_multiplier: [0.80, 1.20]
+  contrast_multiplier: [0.90, 1.10]
+  airlight_color: [0.70, 0.95]
+  haze_transmission: [0.70, 1.00]
+  blur_sigma_max: 1.20
+  noise_sigma_max: 0.02
+  jpeg_quality: [60, 95]
+
+losses:
+  w_in: 10.0
+  w_clear: 1.0
+  w_area: 1.0
+  w_color: 1.0
+  w_real: 0.10
+  clear_radius_fraction: 0.20
+
+optimization:
+  area_grid: [0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15]
+  success_threshold_tau: 0.25
+  early_stop_consecutive: 200
+  lr_z: 0.02
+  lr_theta: 0.005
+  betas: [0.9, 0.999]
+  steps: 1500
+  batch_size: 2
+  device: "cuda"
+  mixed_precision: false

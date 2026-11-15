@@ -1,0 +1,70 @@
+{
+  "source": "outputs/results/binary_vs_continuous_by_class.json",
+  "methodology": "Empirical head-to-head evaluation across all 132 ground-truth targets in the official 16 Testing Data scenes comparing Binary Camouflage (two-tone discrete vinyl decal) vs. Continuous Colour Camouflage (smooth unconstrained PGD gradient).",
+  "timestamp": "2026-11-13T21:19:50Z",
+  "target_breakdown": {
+    "Aircraft": {
+      "total_ground_truth": 35,
+      "clean_detected": 21,
+      "binary_adv_detected": 21,
+      "binary_blinded": 0,
+      "binary_asr_pct": 0.0,
+      "continuous_adv_detected": 21,
+      "continuous_blinded": 0,
+      "continuous_asr_pct": 0.0
+    },
+    "Building": {
+      "total_ground_truth": 56,
+      "clean_detected": 48,
+      "binary_adv_detected": 46,
+      "binary_blinded": 2,
+      "binary_asr_pct": 4.17,
+      "continuous_adv_detected": 46,
+      "continuous_blinded": 2,
+      "continuous_asr_pct": 4.17,
+      "note": "When evaluated under full iterative multi-patch PGD (adv_camouflage/outputs/results/multi_target_16_images_results.json), 14 out of 20 clean-detected buildings vanished (70.0% ASR)."
+    },
+    "Military Truck": {
+      "total_ground_truth": 22,
+      "clean_detected": 2,
+      "binary_adv_detected": 2,
+      "binary_blinded": 0,
+      "binary_asr_pct": 0.0,
+      "continuous_adv_detected": 2,
+      "continuous_blinded": 0,
+      "continuous_asr_pct": 0.0,
+      "note": "Baseline model barely detects trucks (2/22, 9.1% clean detection rate)."
+    },
+    "Tank": {
+      "total_ground_truth": 19,
+      "clean_detected": 12,
+      "binary_adv_detected": 10,
+      "binary_blinded": 2,
+      "binary_asr_pct": 16.67,
+      "continuous_adv_detected": 10,
+      "continuous_blinded": 2,
+      "continuous_asr_pct": 16.67
+    },
+    "Overall": {
+      "total_ground_truth": 132,
+      "clean_detected": 83,
+      "binary_adv_detected": 79,
+      "binary_blinded": 4,
+      "binary_asr_pct": 4.82,
+      "continuous_adv_detected": 79,
+      "continuous_blinded": 4,
+      "continuous_asr_pct": 4.82
+    }
+  },
+  "rigorous_target_benchmark_comparison": {
+    "source_file": "adv_camouflage/outputs/results/rigorous_asr_comparison.json",
+    "description": "Head-to-head empirical comparison across confirmed clean-detected targets (N=30) under sensor gamma 2.2 and physical color drift",
+    "classes": {
+      "Aircraft": {"clean_detected": 7, "binary_blinded": 3, "binary_asr_pct": 42.86, "continuous_blinded": 3, "continuous_asr_pct": 42.86},
+      "Building": {"clean_detected": 20, "binary_blinded": 18, "binary_asr_pct": 90.0, "continuous_blinded": 19, "continuous_asr_pct": 95.0},
+      "Tank": {"clean_detected": 2, "binary_blinded": 1, "binary_asr_pct": 50.0, "continuous_blinded": 1, "continuous_asr_pct": 50.0},
+      "Military Truck": {"clean_detected": 1, "binary_blinded": 1, "binary_asr_pct": 100.0, "continuous_blinded": 1, "continuous_asr_pct": 100.0},
+      "Overall": {"clean_detected": 30, "binary_blinded": 23, "binary_asr_pct": 76.67, "continuous_blinded": 24, "continuous_asr_pct": 80.0}
+    }
+  }
+}

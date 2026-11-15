@@ -1,0 +1,102 @@
+{
+  "total_scenes_evaluated": 16,
+  "all_bit_identical": true,
+  "records": [
+    {
+      "image": "aircraft-13-_jpg.rf.e7805ba520edaae8deebcd98b4f74265.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "aircraft-22-_jpg.rf.6e93c0a69424aa222adb66e68db93e4b.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "aircraft-26-_jpg.rf.b8aad2d718660cf2f9702113912edbe1.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "aircraft-6-_jpg.rf.4cc2d099985fd530cd49cdad5a9b2e81.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "building-24-_jpg.rf.7c846ff0d2a4c940a72fb2a7b7c1013c.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "building-27-_jpg.rf.90f693560d357ae1a97529f48be76cef.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "building-4-_jpg.rf.95596fc2d7d640e087597816608fd20e.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "building-9-_jpg.rf.cd36cf662c8796fda5fbc784e9f4c675.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "tank-11-_jpg.rf.a5dc0cab338379014e016fea4a5876d2.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "tank-18-_jpg.rf.2f938858ca6dab25155334006f5d7854.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "tank-21-_jpg.rf.43264fcd502a5e76aa1e0d56b63520f9.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "tank-7-_jpg.rf.c04d366873742d3bcee80b2eb825344c.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "truck-13-_jpg.rf.4e81b3b4c43c30db414b959edca4eaaa.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "truck-18-_jpg.rf.1f3f6d7aec3294a6319773f49b35b156.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "truck-28-_jpg.rf.186a450319d0c1aa5a7c06c499266c72.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    },
+    {
+      "image": "truck-3-_jpg.rf.878c09cff57b8805788e1e4fb2fe9af6.jpg",
+      "max_untouched_diff_before_restoration": 0,
+      "final_untouched_diff": 0,
+      "bit_identical": true
+    }
+  ]
+}

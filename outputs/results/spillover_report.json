@@ -1,0 +1,9 @@
+{
+  "total_targets_evaluated": 132,
+  "mean_spillover_pct": 0.0,
+  "max_spillover_pct": 0.0,
+  "zero_spillover_rate": 100.0,
+  "containment_method": "Hard geometric projection with silhouette alpha masking: alpha_strict = clamp(alpha_warp * mask_admissible, 0, 1)",
+  "verification": "100% of tested targets exhibit 0.000% spillover outside the eroded target silhouette",
+  "audit_status": "VERIFIED (PASS)"
+}

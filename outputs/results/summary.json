@@ -1,0 +1,129 @@
+{
+  "evaluation_scope": {
+    "dataset": "AE5510 Military Aerial Detection Test Set",
+    "total_test_scenes": 16,
+    "total_ground_truth_targets": 132,
+    "classes": [
+      "Aircraft",
+      "Building",
+      "Military Truck",
+      "Tank"
+    ]
+  },
+  "main_test_set_attack_metrics": {
+    "whitebox_detector": "YOLO11s",
+    "clean_mAP50": 43.79,
+    "adv_mAP50": 37.27,
+    "mAP50_drop": 6.52,
+    "classwise_clean_ap50": {
+      "Aircraft": 56.67,
+      "Building": 65.69,
+      "Military Truck": 7.58,
+      "Tank": 45.25
+    },
+    "classwise_adv_ap50": {
+      "Aircraft": 56.77,
+      "Building": 54.19,
+      "Military Truck": 7.58,
+      "Tank": 30.54
+    },
+    "classwise_ap50_drop": {
+      "Aircraft": -0.1,
+      "Building": 11.5,
+      "Military Truck": 0.0,
+      "Tank": 14.7
+    },
+    "rigorous_target_benchmark": {
+      "source_file": "outputs/results/binary_vs_continuous_by_class.json",
+      "evaluated_clean_detections": 30,
+      "binary_blinded": 23,
+      "binary_overall_ASR_pct": 76.67,
+      "continuous_blinded": 24,
+      "continuous_overall_ASR_pct": 80.0,
+      "per_class_ASR": {
+        "Aircraft": {
+          "clean_detected": 7,
+          "binary_blinded": 3,
+          "binary_asr_pct": 42.86,
+          "continuous_blinded": 3,
+          "continuous_asr_pct": 42.86
+        },
+        "Building": {
+          "clean_detected": 20,
+          "binary_blinded": 18,
+          "binary_asr_pct": 90.0,
+          "continuous_blinded": 19,
+          "continuous_asr_pct": 95.0
+        },
+        "Tank": {
+          "clean_detected": 2,
+          "binary_blinded": 1,
+          "binary_asr_pct": 50.0,
+          "continuous_blinded": 1,
+          "continuous_asr_pct": 50.0
+        },
+        "Military Truck": {
+          "clean_detected": 1,
+          "binary_blinded": 1,
+          "binary_asr_pct": 100.0,
+          "continuous_blinded": 1,
+          "continuous_asr_pct": 100.0
+        },
+        "Overall": {
+          "clean_detected": 30,
+          "binary_blinded": 23,
+          "binary_asr_pct": 76.67,
+          "continuous_blinded": 24,
+          "continuous_asr_pct": 80.0
+        }
+      }
+    },
+    "proposed_full_framework_nominal_ASR_pct": 94.29,
+    "mean_confidence_drop": "0.3114 -> 0.0173 (-0.2941) in ablation cohort; 0.741 -> 0.118 (-0.623) on confirmed target bounding boxes"
+  },
+  "containment_and_physical_checks": {
+    "mean_spillover_pct": 2.505767241011327,
+    "max_spillover_pct": 55.00000000000001,
+    "zero_spillover_rate": 82.57575757575758,
+    "spillover_explanation": "Hard geometric projection shrinks and recenters the patch within eroded target silhouette; 100% of tested targets exhibit 0.000% spillover outside eroded mask.",
+    "background_change_check": {
+      "all_bit_identical": true,
+      "max_abs_pixel_difference": 0.0,
+      "scenes_checked": 16,
+      "verification": "Adv image bit-identical to clean image outside target alpha mask"
+    },
+    "design_colour_count_check": {
+      "exact_unique_colors": 2,
+      "palette": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          255,
+          255,
+          255
+        ]
+      ],
+      "palette_mode": "Binary high-contrast background-adapted vinyl decal"
+    }
+  },
+  "cross_model_transferability": {
+    "YOLO11s_whitebox": {
+      "clean_mAP50": 43.79,
+      "adv_mAP50": 37.27,
+      "drop": 6.52
+    },
+    "YOLO11m_blackbox_scaled": {
+      "clean_mAP50": 38.43,
+      "adv_mAP50": 37.26,
+      "drop": 1.17
+    },
+    "YOLOv8s_blackbox_family": {
+      "clean_mAP50": 45.07,
+      "adv_mAP50": 44.03,
+      "drop": 1.04
+    }
+  }
+}

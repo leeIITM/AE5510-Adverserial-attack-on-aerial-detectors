@@ -1,0 +1,165 @@
+{
+  "models": {
+    "YOLO11s": {
+      "role": "Whitebox",
+      "clean_mAP50": 43.79,
+      "adv_mAP50": 37.27,
+      "mAP_drop": 6.52,
+      "overall_asr_pct": 4.82,
+      "total_targets": 132,
+      "clean_detected": 83,
+      "adv_detected": 80,
+      "blinded": 4,
+      "per_class": {
+        "Aircraft": {
+          "total_ground_truth": 35,
+          "clean_detected": 21,
+          "adv_detected": 21,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 56.67,
+          "adv_ap50": 56.77,
+          "ap50_drop": -0.1
+        },
+        "Building": {
+          "total_ground_truth": 56,
+          "clean_detected": 48,
+          "adv_detected": 47,
+          "blinded": 2,
+          "asr_pct": 4.17,
+          "clean_ap50": 65.69,
+          "adv_ap50": 54.19,
+          "ap50_drop": 11.5
+        },
+        "Military Truck": {
+          "total_ground_truth": 22,
+          "clean_detected": 2,
+          "adv_detected": 2,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 7.58,
+          "adv_ap50": 7.58,
+          "ap50_drop": 0.0
+        },
+        "Tank": {
+          "total_ground_truth": 19,
+          "clean_detected": 12,
+          "adv_detected": 10,
+          "blinded": 2,
+          "asr_pct": 16.67,
+          "clean_ap50": 45.25,
+          "adv_ap50": 30.54,
+          "ap50_drop": 14.7
+        }
+      }
+    },
+    "YOLO11m": {
+      "role": "Blackbox Scaled",
+      "clean_mAP50": 38.43,
+      "adv_mAP50": 37.26,
+      "mAP_drop": 1.17,
+      "overall_asr_pct": 6.25,
+      "total_targets": 132,
+      "clean_detected": 80,
+      "adv_detected": 80,
+      "blinded": 5,
+      "per_class": {
+        "Aircraft": {
+          "total_ground_truth": 35,
+          "clean_detected": 24,
+          "adv_detected": 27,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 64.57,
+          "adv_ap50": 70.21,
+          "ap50_drop": -5.65
+        },
+        "Building": {
+          "total_ground_truth": 56,
+          "clean_detected": 49,
+          "adv_detected": 46,
+          "blinded": 3,
+          "asr_pct": 6.12,
+          "clean_ap50": 66.79,
+          "adv_ap50": 54.93,
+          "ap50_drop": 11.85
+        },
+        "Military Truck": {
+          "total_ground_truth": 22,
+          "clean_detected": 1,
+          "adv_detected": 1,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 4.55,
+          "adv_ap50": 4.55,
+          "ap50_drop": 0.0
+        },
+        "Tank": {
+          "total_ground_truth": 19,
+          "clean_detected": 6,
+          "adv_detected": 6,
+          "blinded": 2,
+          "asr_pct": 33.33,
+          "clean_ap50": 17.82,
+          "adv_ap50": 19.36,
+          "ap50_drop": -1.54
+        }
+      }
+    },
+    "YOLOv8s": {
+      "role": "Blackbox Family",
+      "clean_mAP50": 45.07,
+      "adv_mAP50": 44.03,
+      "mAP_drop": 1.04,
+      "overall_asr_pct": 5.88,
+      "total_targets": 132,
+      "clean_detected": 85,
+      "adv_detected": 83,
+      "blinded": 5,
+      "per_class": {
+        "Aircraft": {
+          "total_ground_truth": 35,
+          "clean_detected": 22,
+          "adv_detected": 22,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 58.21,
+          "adv_ap50": 57.73,
+          "ap50_drop": 0.48
+        },
+        "Building": {
+          "total_ground_truth": 56,
+          "clean_detected": 53,
+          "adv_detected": 48,
+          "blinded": 5,
+          "asr_pct": 9.43,
+          "clean_ap50": 72.04,
+          "adv_ap50": 56.87,
+          "ap50_drop": 15.17
+        },
+        "Military Truck": {
+          "total_ground_truth": 22,
+          "clean_detected": 1,
+          "adv_detected": 1,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 4.55,
+          "adv_ap50": 4.55,
+          "ap50_drop": 0.0
+        },
+        "Tank": {
+          "total_ground_truth": 19,
+          "clean_detected": 9,
+          "adv_detected": 12,
+          "blinded": 0,
+          "asr_pct": 0.0,
+          "clean_ap50": 45.47,
+          "adv_ap50": 56.97,
+          "ap50_drop": -11.5
+        }
+      }
+    }
+  },
+  "timestamp": "2026-11-13T21:19:50Z",
+  "source": "outputs/results/transfer_metrics.json"
+}
