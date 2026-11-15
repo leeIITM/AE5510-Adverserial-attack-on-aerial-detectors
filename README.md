@@ -1,161 +1,131 @@
-# Physically Grounded Binary Adversarial Camouflage for Real-Time Aerial Object Detectors Under Flight Dynamics
+# Binary Adversarial Camouflage for Aerial Object Detectors
 
 [![Python 3.11](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![Ultralytics YOLO11](https://img.shields.io/badge/Ultralytics-YOLO11-00FFFF.svg)](https://github.com/ultralytics/ultralytics)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![IEEE Format](https://img.shields.io/badge/IEEE-Conference%20Paper-00629B.svg)](paper/AE5510_Problem1_Paper.pdf)
 
-**Author:** [leeIITM](https://github.com/leeIITM)  
-**Department of Aerospace Engineering, IIT Madras**  
-**Course Project:** AE5510 Machine Learning Applications — Problem 1
-
----
-
-## Overview
-
-Uncrewed aerial reconnaissance vehicles (UAVs) increasingly deploy single-stage deep convolutional object detectors (YOLO11 and YOLOv8) to rapidly detect and localize high-value tactical assets, including parked aircraft, military transport vehicles, tanks, and command infrastructure. While deep detectors achieve high nominal accuracy, they are vulnerable to adversarial physical camouflage.
-
-Prior physical patch attacks typically assume unconstrained, multi-spectral 24-bit RGB printing placed indiscriminately across scenes. In real-world aerial operations, such attacks suffer from:
-1. **Unrealistic Chromatic Complexity:** Printer gamut clipping and atmospheric attenuation dilute continuous 24-bit RGB gradient noise.
-2. **Unconstrained Background Spillover:** Slapping rectangular patches over bounding boxes alters surrounding terrain, violating operational stealth.
-3. **Aerial Dynamic Fragility:** Digital patches fail under varying solar zenith angles, atmospheric haze, platform vibration, and radiometric sensor gamma curves.
-
-This repository implements a **physically realizable, background-aware binary adversarial camouflage framework**. Our approach jointly optimizes a discrete two-tone vinyl decal pattern and a 6-DoF conformal homography warp strictly confined within the target asset silhouette. Using a differentiable Straight-Through Estimator (STE) and post-convergence hard geometric projection, our system guarantees **0.000% background spillover** and **bit-level background pixel identity** outside the target silhouette ($\max |\Delta| = 0.000000$).
+**Author:** [leeIITM](https://github.com/leeIITM)
+**Department of Aerospace Engineering, IIT Madras**
+**Course project:** AE5510 Machine Learning Applications, Problem 1
 
 ---
 
-## Framework Architecture
+## What this project is about
 
-```
-[ Aerial Image + Bounding Box ]
-              │
-      ┌───────┴────────────────────────┐
-      ▼                                ▼
-[ Target Silhouette ]        [ Background Context Ring ]
-  (YOLO11n-seg + GrabCut)      (15px ambient dilation)
-      │                                │
-      ▼                                ▼
-[ Distance Transform Map ]   [ CIELAB 2-Tone Palette ]
-  (Peak Clearance Center)      (ΔL* ≥ 25.0, ΔE* ≤ 30.0)
-      │                                │
-      └───────┬────────────────────────┘
-              ▼
-   ┌──────────────────────────────────────────────┐
-   │         Joint Optimization Engine            │
-   │  • Pattern Logits z ∈ R^(48x48) via STE      │
-   │  • 6-DoF Conformal Homography Pose θ         │
-   │  • Expectation over Transformations (EoT)    │
-   │  • Differentiable Surrogate Loss (YOLO11s)   │
-   └──────────────────────────────────────────────┘
-              │
-              ▼
-   [ Hard Geometric Projection Barrier ]
-     (Iterative shrinkage to 0.000% spillover)
-              │
-              ▼
-   [ Photometric Sensor Radiance Pipeline ]
-     (Linear shading, feathered alpha, sensor gamma)
-              │
-              ▼
-   [ Deployable 2-Tone Vinyl Decal + Coordinates ]
-```
+Drones increasingly use object detectors like YOLO to spot aircraft, vehicles, tanks and buildings from the air. These detectors can be fooled by specially designed patterns, called adversarial patches. This project asks a practical question:
+
+> Can a simple two-colour sticker, placed only on the object itself, stop a detector from seeing it?
+
+Most earlier patch attacks have three problems when used on aerial images:
+
+1. They use full-colour patterns that are hard to print accurately.
+2. They are placed as rectangles, so they spill onto the ground around the object.
+3. They are not tested against things like haze, lighting changes and camera blur.
+
+Our approach fixes these by using only **two colours** (like cut vinyl), keeping the sticker **inside the object's outline**, and training it under **flight-like conditions**.
 
 ---
 
-## Key Verified Results
+## How it works
 
-All metrics below are generated directly from the reproducible audit evaluation on the official 16-scene tactical aerial test set (132 ground-truth targets):
+1. **Find the object outline** with a segmentation model (YOLO11n-seg, with GrabCut as backup).
+2. **Pick two colours** that blend with the area around the object but still contrast with each other.
+3. **Train the pattern and its position together.** The pattern is a 48x48 black-and-white grid, learned with a Straight-Through Estimator. Its position, size, rotation and shear are learned at the same time.
+4. **Keep it inside the object.** If any part of the sticker lands outside the outline, it is shrunk and moved inward.
+5. **Simulate flight.** During training the image is randomly rotated, zoomed, hazed, darkened or brightened, blurred and given sensor noise, so the pattern is not tied to one perfect view.
 
-### 1. Physical Containment & Integrity Verification
-| Quality Metric | Benchmark Requirement | Measured Result | Audit Status |
+The detector used for training (YOLO11s) is the "whitebox" model. YOLO11m and YOLOv8s are used as unseen "blackbox" models to test transfer.
+
+---
+
+## Main results
+
+Tested on 16 aerial scenes with 132 labelled targets.
+
+### Two-colour vs. full-colour patch
+
+Attack success rate (ASR) is the share of originally detected targets that the detector no longer finds.
+
+| Class | Clean detections | Binary ASR | Continuous ASR |
 | :--- | :---: | :---: | :---: |
-| **Mean Background Spillover** | $0.000\%$ | **0.000%** | **VERIFIED (PASS)** |
-| **Maximum Observed Spillover** | $0.000\%$ | **0.000%** | **VERIFIED (PASS)** |
-| **Zero-Spillover Target Rate** | $100.0\%$ | **100.0% (132/132)** | **VERIFIED (PASS)** |
-| **Max Abs Background Difference ($\Delta$)** | $0.000000$ | **0.000000** | **VERIFIED (PASS)** |
-| **Unique Palette Colors** | Exactly 2 | **2 Tones (Vinyl)** | **VERIFIED (PASS)** |
+| Aircraft | 7 | 42.86% | 42.86% |
+| Building | 20 | 90.00% | 95.00% |
+| Military Truck | 1 | 100.00% | 100.00% |
+| Tank | 2 | 50.00% | 50.00% |
+| **Overall** | **30** | **76.67%** | **80.00%** |
 
-### 2. Binary vs. Continuous Camouflage Head-to-Head ASR
-Evaluated across confirmed clean detections under radiometric sensor gamma $\gamma = 2.2$ and physical color drift:
-| Target Class | Clean Detections | Binary Blinded | Binary ASR | Continuous Blinded | Continuous ASR |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Aircraft** | 7 | 3 | 42.86% | 3 | 42.86% |
-| **Building** | 20 | 18 | **90.00%** | 19 | **95.00%** |
-| **Military Truck** | 1 | 1 | 100.00% | 1 | 100.00% |
-| **Tank** | 2 | 1 | 50.00% | 1 | 50.00% |
-| **Overall Benchmark** | **30** | **23** | **76.67%** | **24** | **80.00%** |
+The two-colour patch is almost as effective as the full-colour one, and it is much easier to print. Note that only 30 targets were detected on clean images, so these numbers are based on a small sample.
 
-*Takeaway:* Two-tone vinyl decals match continuous unconstrained RGB gradient attacks (**76.67% vs. 80.00% ASR**) while being 100% field-printable.
+### What each part contributes (YOLO11s)
 
-### 3. Component Ablation Study (YOLO11s)
-| Configuration | Detected Targets | Detection Rate | Mean Confidence | Attack Success Rate (ASR) |
-| :--- | :---: | :---: | :---: | :---: |
-| **Baseline Clean (No Patch)** | 35 / 77 | 45.45% | 0.3114 | 0.00% |
-| **Naive Slapped Sticker** | 15 / 77 | 19.48% | 0.1062 | 57.14% |
-| **Spatial-Only (No Pattern)** | 29 / 77 | 37.66% | 0.2626 | 17.14% |
-| **Texture-Only (Fixed Center)** | 20 / 77 | 25.97% | 0.1730 | 42.86% |
-| **Proposed Full Framework** | **2 / 77** | **2.60%** | **0.0173** | **94.29%** |
+| Setup | Detected | Mean confidence | ASR |
+| :--- | :---: | :---: | :---: |
+| No patch | 35 / 77 | 0.3114 | 0.00% |
+| Naive sticker | 15 / 77 | 0.1062 | 57.14% |
+| Placement only | 29 / 77 | 0.2626 | 17.14% |
+| Pattern only | 20 / 77 | 0.1730 | 42.86% |
+| **Full method** | **2 / 77** | **0.0173** | **94.29%** |
 
-### 4. Cross-Model Transferability (132 Targets)
-| Model | Attack Role | Clean mAP50 | Adv mAP50 | Overall Drop | Building AP50 Drop |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **YOLO11s** | Whitebox Source | 43.79% | 37.27% | **-6.52%** | **-11.50%** |
-| **YOLO11m** | Blackbox Scaled | 38.43% | 37.26% | **-1.17%** | **-11.85%** |
-| **YOLOv8s** | Blackbox Family | 45.07% | 44.03% | **-1.04%** | **-15.17%** |
+Optimising the pattern and the position together works far better than either one alone.
+
+### Transfer to other detectors
+
+| Model | Role | Clean mAP50 | Attacked mAP50 | Building AP50 drop |
+| :--- | :--- | :---: | :---: | :---: |
+| YOLO11s | Source | 43.79% | 37.27% | -11.50% |
+| YOLO11m | Unseen | 38.43% | 37.26% | -11.85% |
+| YOLOv8s | Unseen | 45.07% | 44.03% | -15.17% |
+
+Overall mAP barely changes on the unseen models, but buildings are clearly affected.
 
 ---
 
-## Repository Structure
+## Repository structure
 
 ```
 .
 ├── configs/
-│   └── default.yaml             # Master configuration file (relative paths)
-├── adv_camouflage/              # Core modular library
-│   ├── attack/                  # STE pattern generator, homography pose, EOT, losses, projection
-│   ├── detector/                # Differentiable YOLO wrapper & evaluation metrics
-│   ├── geometry/                # Segmentation, Euclidean distance transform, CIELAB palette
-│   └── utils/                   # Label sanitization & 4-corner affine transformation
+│   └── default.yaml              # Main settings
+├── adv_camouflage/               # Core code
+│   ├── attack/                   # Pattern, placement, EOT, losses, projection
+│   ├── detector/                 # YOLO wrapper and metrics
+│   ├── geometry/                 # Outline, distance transform, colour palette
+│   └── utils/                    # Label fixing and affine transforms
 ├── dataset/
-│   └── Testing Data/            # Official 16 testing scenes + audit-corrected labels
-├── weights/                     # Fine-tuned PyTorch model checkpoints (<40MB each)
-│   ├── yolo11s_best.pt          # Primary whitebox model (69.88% mAP50)
-│   ├── yolo11m_best.pt          # Blackbox scaled model (66.51% mAP50)
-│   ├── yolov8s_best.pt          # Blackbox family model (59.36% mAP50)
-│   └── yolo11n-seg.pt           # Semantic segmentation model
+│   └── Testing Data/             # 16 test scenes with corrected labels
+├── weights/                      # Fine-tuned model checkpoints
+│   ├── yolo11s_best.pt
+│   ├── yolo11m_best.pt
+│   ├── yolov8s_best.pt
+│   └── yolo11n-seg.pt
 ├── outputs/
-│   ├── results/                 # Verified benchmark JSON files
-│   └── figures/                 # All high-resolution analytical figures
-├── paper/                       # Complete IEEE Conference Publication
-│   ├── AE5510_Problem1_Paper.tex # 2-Column LaTeX paper with all figures embedded
-│   ├── refs.bib                 # BibTeX references
-│   ├── AE5510_Problem1_Paper.pdf # Compiled 7-page PDF
-│   └── figures/                 # Embedded graphic assets
+│   ├── results/                  # Result files (JSON)
+│   └── figures/                  # Figures
+├── paper/
+│   ├── AE5510_Problem1_Paper.tex # IEEE two-column report
+│   ├── AE5510_Problem1_Paper.pdf
+│   └── figures/
 ├── presentation/
-│   └── AE5510_Problem1_Beamer.tex # Project defense presentation slides
-├── scripts/                     # 1-Line reproduction scripts
-│   ├── run_attack.py            # Run camouflage attack pipeline on test scene
-│   ├── verify_containment.py    # Assert 0.000% spillover & background invariance
-│   ├── evaluate_transfer.py     # Reproduce cross-model transfer benchmark
-│   ├── evaluate_binary_vs_continuous.py # Reproduce head-to-head ASR benchmark
-│   └── compile_paper.py         # Re-compile paper PDF
-├── tests/                       # Automated test suite
-│   ├── test_binary_pattern.py   # Assert 2 unique colors & STE gradient flow
-│   ├── test_containment.py      # Assert hard containment projection
-│   └── test_background_untouched.py # Assert zero background modification
-├── requirements.txt             # Python dependencies
-├── setup.py                     # Local package installer
+│   └── AE5510_Problem1_Beamer.tex
+├── scripts/
+│   ├── run_attack.py
+│   ├── verify_containment.py
+│   ├── evaluate_transfer.py
+│   ├── evaluate_binary_vs_continuous.py
+│   └── compile_paper.py
+├── tests/
+├── requirements.txt
+├── setup.py
 └── README.md
 ```
 
 ---
 
-## Quick Start & Reproduction
+## Getting started
 
-### 1. Installation
+### Install
 
-Clone the repository and install the dependencies:
 ```bash
 git clone https://github.com/leeIITM/AE5510-Adversarial-Camouflage.git
 cd AE5510-Adversarial-Camouflage
@@ -163,73 +133,48 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 2. Verify Physical Containment & Background Identity
-Verifies that all 132 test targets strictly maintain 0.000% spillover and background invariance:
+### Run
+
 ```bash
-python scripts/verify_containment.py
-```
-*Expected Output:*
-```
-========================================================================
-PHYSICAL CONTAINMENT & BACKGROUND INVARIANCE AUDIT
-========================================================================
-[1] Spillover Evaluation (N=132 targets):
-    - Mean Spillover: 0.0000%  (Required: 0.000%)
-    - Max Spillover:  0.0000%  (Required: 0.000%)
-    - Zero-Spillover Target Rate: 100.0% (Required: 100.0%)
-    --> PASS: Hard containment projection strictly verified!
-
-[2] Background Pixel Invariance (N=16 scenes):
-    - All Bit-Identical: True
-    --> PASS: Bit-level background identity strictly preserved (Δ = 0.000000)!
-
-[3] Palette Discrete Cardinality:
-    - Allowed Colors: Exactly 2 (Two-Tone Vinyl Decal)
-    --> PASS: Design uses discrete binary palette {c0, c1}!
-========================================================================
-ALL AUDIT CHECKS PASSED: 100% EMPIRICALLY COMPLIANT
-========================================================================
-```
-
-### 3. Reproduce Cross-Model Transferability
-Evaluates whitebox YOLO11s patches against blackbox YOLO11m and YOLOv8s detectors:
-```bash
-python scripts/evaluate_transfer.py
-```
-
-### 4. Reproduce Binary vs. Continuous Head-to-Head Comparison
-```bash
-python scripts/evaluate_binary_vs_continuous.py
-```
-
-### 5. Run Camouflage Optimization on a Sample Scene
-Executes joint placement and pattern optimization on a sample test scene:
-```bash
+# Optimise a camouflage on a sample scene (images go to outputs/adversarial_images/)
 python scripts/run_attack.py
-```
-Output adversarial images are saved to `outputs/adversarial_images/`.
 
-### 6. Compile IEEE Conference Paper PDF
-```bash
+# Check that the sticker stays inside the object
+python scripts/verify_containment.py
+
+# Transfer to YOLO11m and YOLOv8s
+python scripts/evaluate_transfer.py
+
+# Two-colour vs. full-colour comparison
+python scripts/evaluate_binary_vs_continuous.py
+
+# Build the paper PDF
 python scripts/compile_paper.py
-```
 
-### 7. Run Unit Tests
-```bash
+# Run tests
 pytest tests/ -v
 ```
 
 ---
 
-## IEEE Conference Paper & Citation
+## Limitations
 
-The complete publication draft is available at [`paper/AE5510_Problem1_Paper.pdf`](paper/AE5510_Problem1_Paper.pdf). To cite this work:
+- Everything was tested on digital images. No real stickers were printed or flown.
+- The sticker is treated as flat, so curved or raised parts of an object (like an aircraft tail) are not modelled.
+- Very few trucks and tanks were detected on clean images, so results for those classes are not reliable.
+
+---
+
+## Paper and citation
+
+The full report is in [`paper/AE5510_Problem1_Paper.pdf`](paper/AE5510_Problem1_Paper.pdf).
 
 ```bibtex
-@inproceedings{lee2026adversarial,
+@techreport{lee2026adversarial,
   title={Physically Grounded Binary Adversarial Camouflage for Real-Time Aerial Object Detectors Under Flight Dynamics},
   author={leeIITM},
-  booktitle={Department of Aerospace Engineering, AE5510 Machine Learning Applications Technical Report},
+  institution={Department of Aerospace Engineering, IIT Madras},
+  type={AE5510 Machine Learning Applications Technical Report},
   year={2026},
   url={https://github.com/leeIITM/AE5510-Adversarial-Camouflage}
 }
@@ -238,4 +183,5 @@ The complete publication draft is available at [`paper/AE5510_Problem1_Paper.pdf
 ---
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+MIT License. See the [LICENSE](LICENSE) file.
